@@ -17,7 +17,7 @@ def context_relevancy(question: Text, contexts: list[Text]) -> Text:
     bs = '\n'
     return f"""check if the following question can be answered fully from the provided context.
 you should not rely on any prior knowledge you have, rely only on the context.
-Your answer should be in this format: [[verdict:1]] if the context was useful and [[verdict:0]] if it was not.
+your answer should always start with the verdict following this exact format note the number of the {{ and }}: {{verdict:1}} if the context was useful and {{verdict:0}} if it was not, then give me the reasoning behind your verdict
 question: {question}
 context: {bs.join(context for context in contexts)}
 """
