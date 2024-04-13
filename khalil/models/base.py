@@ -43,7 +43,7 @@ class AutoRegressiveModel(Model):
             {"role": "user", "content": message},
         ]
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False)
-        model_reply = self.pipeline(prompt)[0]['generated_text']
+        model_reply = self.pipeline(prompt)[0]['generated_text'][len(prompt):]
         return model_reply
 
 

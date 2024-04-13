@@ -24,20 +24,13 @@ context: {bs.join(context for context in contexts)}
 
 
 # TODO: move this somewhere else
-def parse_context_relevency_output(output: Text) -> int:
+def parse_context_relevency_output(text: Text) -> int:
     """
     parses the judges output that comes out of the prompt context_relevency
     return: 0 or 1 (the veridict  and -1 if there is no verdict)
     """
-    # Regular expression pattern
-    pattern = r'\[/INST\].*?\[\[verdict:(\d+)\]\]'
-
-    # Search for the pattern
-    match = re.search(pattern, output)
-
-    # Extract the number
+    match = re.search(r'\[\[verdict:(\d+)\]\]', text)
     if match:
-        verdict_number = match.group(1)
-        return int(verdict_number)
+        return int(match.group(1))
     else:
         return -1
