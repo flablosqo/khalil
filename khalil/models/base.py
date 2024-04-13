@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from typing import Any, Text
 
-from tranformers import pipeline
+from transformers import pipeline
 
 
 class Model(ABC):
