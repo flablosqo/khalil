@@ -1,10 +1,10 @@
 import random
 from typing import Text
 
-
 from khalil.models.base import AutoRegressiveModel, Encoder
-from khalil.synthetic_data.prompt import (
-    context_relevancy, simple_question_prompt, parse_context_relevency_output)
+from khalil.synthetic_data.prompt import (context_relevancy,
+                                          parse_context_relevency_output,
+                                          simple_question_prompt)
 
 
 class Synthetic_data_generator:
@@ -44,16 +44,7 @@ class Synthetic_data_generator:
                 query_texts=[choice] if choice else None,
                 n_results=3
             )
-            contexts = []
-            print('choice')
-            print(choice)
-            contexts.append(choice)
-            print('before')
-            print(contexts)
-            contexts.extend(
-                similiar_to_chosen_context['documents']) if similiar_to_chosen_context['documents'] else None
-            print('results: *************')
-            print(similiar_to_chosen_context['documents'])
+            contexts = similiar_to_chosen_context['documents'][0]
             synthetic_data_sample = self._generate(contexts)
             synthetic_data = synthetic_data | synthetic_data_sample
             i += 1
