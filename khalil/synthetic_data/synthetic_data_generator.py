@@ -9,6 +9,7 @@ from khalil.synthetic_data.prompt import (
 
 class Synthetic_data_generator:
 
+    # TODO: fix the constructor's parameters
     # TODO: fix the types
     def __init__(self, generator: AutoRegressiveModel, judge: AutoRegressiveModel, encoder: Encoder) -> None:
         self.generator = generator
@@ -30,7 +31,7 @@ class Synthetic_data_generator:
         self.vector_db = vector_db
 
         synthetic_data: dict[Text, list[Text]] = {}
-        # TODO: deal with get collection
+        # TODO: deal with Chromadb collections
         collection = self.vector_db.get_collection(name="Students")
         results_all = collection.get()
         i = 0

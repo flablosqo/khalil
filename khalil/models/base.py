@@ -35,6 +35,7 @@ class AutoRegressiveModel(Model):
             repetition_penalty=repetition_penalty
         )
 
+    # TODO: Parse the output and return only the model reply
     # TODO: specifiy the prompt or use the default one
     def generate(self, message: Text) -> Text:
 
