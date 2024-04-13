@@ -3,7 +3,6 @@ from typing import Text
 
 
 def simple_question_prompt(contexts: list[Text]) -> Text:
-    print(contexts)
     bs = '\n'
 
     return f""" Generate one and only one question that can be fully answered from the given context,

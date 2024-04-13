@@ -63,12 +63,17 @@ class Synthetic_data_generator:
         question: Text = ''
         not_verified: bool = True
         while (not_verified):
+            print('*******\nTRYING')
             prompt = simple_question_prompt(contexts)
             question = self.generator.generate(prompt)
+            print('\nCHOSEN QUESTION:', question, '\n')
             # verify the quality of the question
             prompt = context_relevancy(question, contexts)
             judge_reply = self.judge.generate(prompt)
+            print('judge reply', judge_reply)
+            print('*******')
             verdict: int = parse_context_relevency_output(judge_reply)
+            print('verdict', verdict)
 
             if verdict == 1:
                 synthetic_data_sample[question] = contexts
