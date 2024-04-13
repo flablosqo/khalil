@@ -19,7 +19,7 @@ class Synthetic_data_generator:
 
     # TODO: Fix the type of the vectordb
     # TODO: refactor the code below
-    def generate_from_vector_db(self,  vector_db, num_questions: int = 3,) -> dict[Text, list[Text]]:
+    def generate_from_vector_db(self,  vector_db, num_questions: int = 3) -> dict[Text, list[Text]]:
         """
         generates synthetic data from an already existing vectordb by follwing the following steps:
         1- gets a random context partially done
@@ -46,8 +46,12 @@ class Synthetic_data_generator:
             )
             contexts = []
             contexts.append(choice)
+            print('before')
+            print(contexts)
             contexts.extend(
                 similiar_to_chosen_context['documents']) if similiar_to_chosen_context['documents'] else None
+            print('before')
+            print(contexts)
             synthetic_data_sample = self._generate(contexts)
             synthetic_data = synthetic_data | synthetic_data_sample
             i += 1
