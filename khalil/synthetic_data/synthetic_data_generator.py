@@ -45,13 +45,15 @@ class Synthetic_data_generator:
                 n_results=3
             )
             contexts = []
+            print('choice')
+            print(choice)
             contexts.append(choice)
             print('before')
             print(contexts)
             contexts.extend(
                 similiar_to_chosen_context['documents']) if similiar_to_chosen_context['documents'] else None
-            print('before')
-            print(contexts)
+            print('results: *************')
+            print(similiar_to_chosen_context['documents'])
             synthetic_data_sample = self._generate(contexts)
             synthetic_data = synthetic_data | synthetic_data_sample
             i += 1
