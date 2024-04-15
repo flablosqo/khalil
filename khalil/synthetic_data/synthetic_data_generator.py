@@ -84,6 +84,11 @@ class Synthetic_data_generator:
                 'contexts': contexts
             }
             # verdict: int = context_relevany(self.judge, judge_data)
+            del judge_data['question']
+            print('*****')
+            judge_data['answer'] = 'Alexandra Thompson is 19 years old'
+            print('judge data: ', judge_data)
+            print('*****')
             verdict: int = faithfulness(self.judge, judge_data)
 
             if verdict == 1:
