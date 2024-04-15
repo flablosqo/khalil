@@ -1,10 +1,9 @@
 import random
-from typing import Text
 
+from khalil.evaluation.context_relevancy import context_relevany
 from khalil.models.base import AutoRegressiveModel, Encoder
-from khalil.synthetic_data.prompt import (context_relevancy,
-                                          parse_context_relevency_output,
-                                          simple_question_prompt)
+from khalil.models.Prompt import Prompt
+from khalil.synthetic_data.prompt import (SIMPLE_QUESTION_PROMPT)
 
 
 class Synthetic_data_generator:
@@ -19,7 +18,7 @@ class Synthetic_data_generator:
 
     # TODO: Fix the type of the vectordb
     # TODO: refactor the code below
-    def generate_from_vector_db(self,  vector_db, num_questions: int = 3) -> dict[Text, list[Text]]:
+    def generate_from_vector_db(self,  vector_db, num_questions: int = 3) -> dict[str, list[str]]:
         """
         generates synthetic data from an already existing vectordb by follwing the following steps:
         1- gets a random context partially done
@@ -30,7 +29,7 @@ class Synthetic_data_generator:
         """
         self.vector_db = vector_db
 
-        synthetic_data: dict[Text, list[Text]] = {}
+        synthetic_data: dict[str, list[str]] = {}
         # TODO: deal with Chromadb collections
         collection = self.vector_db.get_collection(name="Students")
         results_all = collection.get()
@@ -55,25 +54,34 @@ class Synthetic_data_generator:
     # TODO: add the POOR feature
     # TODO: check if the dict type works on 3.9>
 
-    def _generate(self, contexts: list[str]) -> dict[Text, list[Text]]:
+    def _generate(self, contexts: list[str]) -> dict[str, list[str]]:
         """
         generates one question and verifies it for the given list of contexts
         """
-        synthetic_data_sample: dict[Text, list[Text]] = {}
-        question: Text = ''
+        synthetic_data_sample: dict[str, list[str]] = {}
+        question: str = ''
         not_verified: bool = True
+
+        # prompts
+        generation_data: dict[str, str | list[str]] = {'contexts': contexts}
+        generation_prompt: Prompt = Prompt(
+            base=SIMPLE_QUESTION_PROMPT,
+            data=generation_data
+        )
+        print('GENERATION PROMPT', generation_prompt.get_text())
+
         while (not_verified):
+
             print('*******\nTRYING')
-            prompt = simple_question_prompt(contexts)
-            question = self.generator.generate(prompt)
+            question: str = self.generator.generate(
+                generation_prompt.get_text())
             print('\nCHOSEN QUESTION:', question, '\n')
             # verify the quality of the question
-            prompt = context_relevancy(question, contexts)
-            judge_reply = self.judge.generate(prompt)
-            print('judge reply', judge_reply)
-            print('*******')
-            verdict: int = parse_context_relevency_output(judge_reply)
-            print('verdict', verdict)
+            judge_data: dict[str, str | list[str]] = {
+                'question': question,
+                'contexts': contexts
+            }
+            verdict: int = context_relevany(self.judge, judge_data)
 
             if verdict == 1:
                 synthetic_data_sample[question] = contexts

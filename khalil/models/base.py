@@ -1,6 +1,6 @@
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Text
+from typing import Any
 
 from transformers import pipeline
 
@@ -10,11 +10,11 @@ class Model(ABC):
         self.model = model
 
     # TODO: fix the inputs and the outputs
-    def generate(self, message: Text) -> Text:
+    def generate(self, message: str) -> str:
         return ''
 
     # TODO: fix the inputs and the outputs
-    def encode(self, sentence: Text):
+    def encode(self, sentence: str):
         pass
 
 
@@ -37,7 +37,7 @@ class AutoRegressiveModel(Model):
 
     # TODO: Parse the output and return only the model reply
     # TODO: specifiy the prompt or use the default one
-    def generate(self, message: Text) -> Text:
+    def generate(self, message: str) -> str:
 
         messages = [
             {"role": "user", "content": message},
@@ -51,6 +51,6 @@ class Encoder(Model):
     def __init__(self, model: Any):
         super().__init__(model)
 
-    def encode(self, sentence: Text):
+    def encode(self, sentence: str):
         result = self.model.encode(sentence, normalize_embeddings=True)
         return result
