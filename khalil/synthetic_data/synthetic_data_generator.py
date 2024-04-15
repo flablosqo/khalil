@@ -1,9 +1,10 @@
 import random
 
 from khalil.evaluation.context_relevancy import context_relevany
+from khalil.evaluation.faithfulness import faithfulness
 from khalil.models.base import AutoRegressiveModel, Encoder
 from khalil.models.Prompt import Prompt
-from khalil.synthetic_data.prompt import (SIMPLE_QUESTION_PROMPT)
+from khalil.synthetic_data.prompt import SIMPLE_QUESTION_PROMPT
 
 
 class Synthetic_data_generator:
@@ -70,6 +71,7 @@ class Synthetic_data_generator:
         )
         print('GENERATION PROMPT', generation_prompt.get_text())
 
+        # TODO: fail safe in case it never gets verified
         while (not_verified):
 
             print('*******\nTRYING')
@@ -81,7 +83,8 @@ class Synthetic_data_generator:
                 'question': question,
                 'contexts': contexts
             }
-            verdict: int = context_relevany(self.judge, judge_data)
+            # verdict: int = context_relevany(self.judge, judge_data)
+            verdict: int = faithfulness(self.judge, judge_data)
 
             if verdict == 1:
                 synthetic_data_sample[question] = contexts
