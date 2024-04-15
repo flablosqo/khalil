@@ -44,9 +44,9 @@ def faithfulness(judge, data: dict[str, str | list[str]]) -> int:
                     parse=parse_failfulness_output
                     )
     print('STARTING FAITHFULNESS\n$$$$$$$$$$$$$$$$$$$$$$\n')
-    print('VERIFICATION PROMPT', prompt)
+    print('VERIFICATION PROMPT', prompt.get_text())
 
-    judge_reply = judge.generate(prompt)
+    judge_reply = judge.generate(prompt.get_text())
     print('judge reply', judge_reply)
     print('*******')
     verdict: int = parse_failfulness_output(judge_reply)
