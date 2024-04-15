@@ -27,9 +27,9 @@ class Prompt:
             self.prompt = f'\nquestion: {data["question"]}'
         if 'contexts' in data:
             bs = '\n'
-            self.prompt = f'\ncontext: {bs.join(context for context in data["contexts"])}'
+            self.prompt += f'\ncontext: {bs.join(context for context in data["contexts"])}'
         if 'answer' in data:
-            self.prompt = f'\nanswer: {data["answer"]}'
+            self.prompt += f'\nanswer: {data["answer"]}'
 
     def get_text(self) -> str:
         return self.prompt
