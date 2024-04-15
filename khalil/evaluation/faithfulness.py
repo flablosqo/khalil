@@ -30,9 +30,11 @@ def parse_failfulness_output(text: str) -> int:
     return: 0 or 1 (the veridict  and -1 if there is no verdict)
     """
     pattern = r'{verdict:(\d)}'
-    match = re.search(pattern, text)
-    if match:
-        return int(match.group(1))
+    matches = re.findall(pattern, text)
+
+    if matches:
+        print('matches:', matches)
+        return int(matches[-1])
     else:
         return -1
 
