@@ -33,7 +33,6 @@ def parse_failfulness_output(text: str) -> int:
     matches = re.findall(pattern, text)
 
     if matches:
-        print('matches:', matches)
         return int(matches[-1])
     else:
         return -1
