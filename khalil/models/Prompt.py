@@ -14,6 +14,8 @@ class Prompt:
             Case 2: only examples (contexts), should always be a list
             Case 3: question and contexts and **answer**
         """
+        print('inside prompt constructor')
+        print(data)
 
         self.base = base
         self.data = data
@@ -22,12 +24,12 @@ class Prompt:
         # beginning of creating the prompt
         self.prompt = base
         if 'question' in data:
-            self.prompt = f'\nquestion: {data['question']}'
+            self.prompt = f'\nquestion: {data["question"]}'
         if 'contexts' in data:
             bs = '\n'
-            self.prompt = f'\ncontext: {bs.join(context for context in data['contexts'])}'
+            self.prompt = f'\ncontext: {bs.join(context for context in data["contexts"])}'
         if 'answer' in data:
-            self.prompt = f'\nanswer: {data['answer']}'
+            self.prompt = f'\nanswer: {data["answer"]}'
 
     def get_text(self) -> str:
         return self.prompt
