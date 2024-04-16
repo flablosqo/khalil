@@ -26,7 +26,10 @@ def parse_context_relevency_output(text: str) -> int:
 # TODO: types
 
 
-def context_relevany(judge, data: dict[str, str | list[str]]) -> int:
+def context_relevany_one(judge, data: dict[str, str | list[str]]) -> int:
+    """
+    calculates the metrics context relevency for one question
+    """
     prompt = Prompt(base=CONTEXT_RELEVANCY, data=data,
                     parse=parse_context_relevency_output
                     )
@@ -38,3 +41,14 @@ def context_relevany(judge, data: dict[str, str | list[str]]) -> int:
     verdict: int = parse_context_relevency_output(judge_reply)
     print('verdict', verdict)
     return verdict
+
+
+def context_relevany_many(judge, data: list[dict[str, str | list[str]]]) -> float:
+    """
+    calculates the metrics context relevency for multiple questions
+    """
+    context_relevany_score: float = 0
+    for element in data:
+        context_relevany_score += context_relevany_one(judge, element)
+    context_relevany_score = context_relevany_score / len(data)
+    return context_relevany_score

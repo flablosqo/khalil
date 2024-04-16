@@ -63,6 +63,7 @@ class Synthetic_data_generator:
             synthetic_data = synthetic_data | {i: synthetic_data_sample}
             i += 1
 
+        # TODO: Really don't like the 2 while loops
         i = 0
         while (i < multiple_context_question):
 

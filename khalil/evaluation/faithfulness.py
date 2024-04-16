@@ -40,7 +40,7 @@ def parse_failfulness_output(text: str) -> int:
 # TODO: types
 
 
-def faithfulness(judge, data: dict[str, str | list[str]]) -> int:
+def faithfulness_one(judge, data: dict[str, str | list[str]]) -> int:
     prompt = Prompt(base=FAITHFULNESS, data=data,
                     parse=parse_failfulness_output
                     )
@@ -54,3 +54,14 @@ def faithfulness(judge, data: dict[str, str | list[str]]) -> int:
     print('verdict', verdict)
     print('DONE WITH FAITHFULNESS\n$$$$$$$$$$$$$$$$$$$$$$\n')
     return verdict
+
+
+def faithfulness_many(judge, data: list[dict[str, str | list[str]]]) -> float:
+    """
+    calculates the metrics faithfulness for multiple questions
+    """
+    faithfulness_score: float = 0
+    for element in data:
+        faithfulness_score += faithfulness_one(judge, element)
+    faithfulness_score = faithfulness_score / len(data)
+    return faithfulness_score
