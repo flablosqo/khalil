@@ -8,6 +8,23 @@ from khalil.models.Prompt import Prompt
 from khalil.synthetic_data.prompt import TYPES
 
 
+# NOTE: chroma part
+
+from chromadb.utils import embedding_functions
+from chromadb import Documents, EmbeddingFunction, Embeddings
+
+
+class MyEmbeddingFunction(EmbeddingFunction[Documents]):
+    def __call__(self, input: Documents) -> Embeddings:
+        sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="BAAI/bge-large-en-v1.5")
+        embeddings = sentence_transformer_ef(input)
+        return embeddings
+
+
+custom = MyEmbeddingFunction()
+
+
 class Synthetic_data_generator:
 
     # TODO: fix the constructor's parameters
@@ -44,7 +61,7 @@ class Synthetic_data_generator:
         synthetic_data: dict[int, dict[str, str | list[str]]] = {}
         # TODO: deal with Chromadb collections
         collection = self.vector_db.get_collection(
-            name="langchain", embedding_function=self.encoder.model)
+            name="langchain", embedding_function=custom)
         results_all = collection.get()
         i: int = 0
         while (i < simple_question):
