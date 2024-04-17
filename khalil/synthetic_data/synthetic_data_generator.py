@@ -65,18 +65,18 @@ class Synthetic_data_generator:
         i: int = 0
         while (i < simple_question):
 
-            choice = random.choice(
-                results_all["documents"]) if results_all["documents"] else None
-
-            # NOTE: THE ASSUMPTION IS THAT THE CONTEXT PROVIDE SIMPLAR BUT SOMEWHAT DIFFERENT INFORMATION/// verify with multiple context quesetion
-            similiar_to_chosen_context = collection.query(
-                query_texts=[choice] if choice else None,
-                n_results=3
-            )
-            contexts = similiar_to_chosen_context['documents'][0]
             synthetic_data_sample: dict[str, str | list[str]] = {}
-            # TODO: WHYYYYYYYYYYY
             while not synthetic_data_sample:
+                choice = random.choice(
+                    results_all["documents"]) if results_all["documents"] else None
+
+                # NOTE: THE ASSUMPTION IS THAT THE CONTEXT PROVIDE SIMPLAR BUT SOMEWHAT DIFFERENT INFORMATION/// verify with multiple context quesetion
+                similiar_to_chosen_context = collection.query(
+                    query_texts=[choice] if choice else None,
+                    n_results=3
+                )
+                contexts = similiar_to_chosen_context['documents'][0]
+                # TODO: WHYYYYYYYYYYY
                 print('**************question number', i)
                 synthetic_data_sample = self._generate(contexts, 'simple')
             synthetic_data = synthetic_data | {i: synthetic_data_sample}
