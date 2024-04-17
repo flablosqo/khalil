@@ -44,7 +44,7 @@ class Synthetic_data_generator:
         synthetic_data: dict[int, dict[str, str | list[str]]] = {}
         # TODO: deal with Chromadb collections
         collection = self.vector_db.get_collection(
-            name="langchain", embedding_function=self.encoder)
+            name="langchain", embedding_function=self.encoder.model)
         results_all = collection.get()
         i: int = 0
         while (i < simple_question):
