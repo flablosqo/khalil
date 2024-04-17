@@ -1,17 +1,16 @@
 # TODO: DEAL WITH DICT TYPES
 import random
 
+from chromadb import Documents, EmbeddingFunction, Embeddings
+from chromadb.utils import embedding_functions
+
 from khalil.evaluation.context_relevancy import context_relevany_one
 from khalil.evaluation.faithfulness import faithfulness_one
 from khalil.models.base import AutoRegressiveModel, Encoder
 from khalil.models.Prompt import Prompt
 from khalil.synthetic_data.prompt import TYPES
 
-
 # NOTE: chroma part
-
-from chromadb.utils import embedding_functions
-from chromadb import Documents, EmbeddingFunction, Embeddings
 
 
 class MyEmbeddingFunction(EmbeddingFunction[Documents]):
@@ -75,9 +74,11 @@ class Synthetic_data_generator:
                 n_results=3
             )
             contexts = similiar_to_chosen_context['documents'][0]
+            synthetic_data_sample: dict[str, str | list[str]] = {}
             # TODO: WHYYYYYYYYYYY
-            synthetic_data_sample: dict[str, str | list[str]] = self._generate(
-                contexts, 'simple')
+            while not synthetic_data_sample:
+                print('**************question number', i)
+                synthetic_data_sample = self._generate(contexts, 'simple')
             synthetic_data = synthetic_data | {i: synthetic_data_sample}
             i += 1
 
@@ -112,7 +113,6 @@ class Synthetic_data_generator:
         synthetic_data_sample: dict[str, str | list[str]] = {}
         question: str = ''
         not_verified: bool = True
-
         # prompts
         generation_data: dict[str, str | list[str]] = {'contexts': contexts}
         generation_prompt: Prompt = Prompt(
@@ -122,21 +122,21 @@ class Synthetic_data_generator:
         print('GENERATION PROMPT', generation_prompt.get_text())
 
         # TODO: fail safe in case it never gets verified
-        while (not_verified):
 
-            print('*******\nTRYING')
-            question: str = self.generator.generate(
-                generation_prompt.get_text())
-            print('\nCHOSEN QUESTION:', question, '\n')
-            # verify the quality of the question
-            judge_data: dict[str, str | list[str]] = {
-                'question': question,
-                'contexts': contexts
-            }
-            verdict: int = context_relevany_one(self.judge, judge_data)
+        print('*******\nTRYING')
+        question: str = self.generator.generate(
+            generation_prompt.get_text())
+        print('\nCHOSEN QUESTION:', question, '\n')
+        # verify the quality of the question
+        judge_data: dict[str, str | list[str]] = {
+            'question': question,
+            'contexts': contexts
+        }
+        verdict: int = context_relevany_one(self.judge, judge_data)
 
-            if verdict == 1:
-                synthetic_data_sample[question] = contexts
-                not_verified = False
-
-        return synthetic_data_sample
+        if verdict == 1:
+            synthetic_data_sample[question] = contexts
+            not_verified = False
+            return synthetic_data_sample
+        else:
+            return {}

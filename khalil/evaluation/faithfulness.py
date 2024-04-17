@@ -7,20 +7,9 @@ import re
 from khalil.models.Prompt import Prompt
 
 ######################   START HERE ####################
-FAITHFULNESS: str = """
-check if the given context explicitly supports every sentence and fact from the following answer.
-you should not rely on any prior knowledge you have, or any wildly known facts. Rely only on the given context. The context is everything you know.
-the output should be with this format: {{verdict: [[put your verdict here]]}}
-follow these rules and stick to them:
-{{verdict:0}} well-established and known facts that are not present in the context should get a verdict of 0.
-{{verdict:0}} facts implied by the context but not actually said get a verdict of 0 
-{{verdict:0}} implied fact not present in the context get a verdict of 0.
-{{verdict:0}} if you find a fact in the answer that the context can't back up.  
-{{verdict:0}} if you find a fact in the answer that is implied in the context but isn't actually directly said in the context.
-{{verdict:0}} if you find a fact in the answer that is mentioned in the context but is disregarded when you take into consideration the entire meaning of the context.
-{{verdict:1}} if every fact and sentence in the answer could be found mentioned explicitly in the provided context.
-remind me with the rules first and then give me the verdict. the verdict should be the last thing in your answer
-"""
+FAITHFULNESS: str = """from this context can I infer that answer ? Please utilize only the provided context and not the general information. 
+If your response is no, {{verdict: [[0]]}}; otherwise, {{verdict: [[1]]}}.
+the variable verdict should be the last thing in your answer."""
 
 
 # TODO: remake this to be a function that works everywhere
