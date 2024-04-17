@@ -17,7 +17,7 @@ from chromadb import Documents, EmbeddingFunction, Embeddings
 class MyEmbeddingFunction(EmbeddingFunction[Documents]):
     def __call__(self, input: Documents) -> Embeddings:
         sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="BAAI/bge-large-en-v1.5")
+            model_name="BAAI/bge-base-en-v1.5")
         embeddings = sentence_transformer_ef(input)
         return embeddings
 
