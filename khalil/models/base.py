@@ -1,13 +1,17 @@
+# TODO: handle different types of models differently
 import re
 from abc import ABC, abstractmethod
 from typing import Any
 
+import ollama  # NOTE: conditional imports?
 from transformers import pipeline
 
 
 class Model(ABC):
-    def __init__(self, model: Any):
+    def __init__(self, model: Any, model_name: str = ''):
+        self.model_name = model_name
         self.model = model
+        self.is_ollama = False
 
     # TODO: fix the inputs and the outputs
     def generate(self, message: str) -> str:
@@ -20,31 +24,52 @@ class Model(ABC):
 
 # TODO: fix the types of the model and the tokenizer to work with huggingface transformers
 class AutoRegressiveModel(Model):
-    def __init__(self, model: Any, tokenizer: Any, max_new_tokens: int = 1_000_000, do_sample: bool = True, temperature: float = 0.7, top_p: float = 0.95, top_k: float = 40, repetition_penalty: float = 1.1):
-        super().__init__(model)
-        self.tokenizer = tokenizer
-        self.pipeline = pipeline(
-            "text-generation",
-            model=model,
-            tokenizer=tokenizer,
-            max_new_tokens=max_new_tokens,
-            do_sample=do_sample,
-            temperature=temperature,
-            top_p=top_p,
-            top_k=top_k,
-            repetition_penalty=repetition_penalty
-        )
+    def __init__(self, model: Any, tokenizer: Any = None, max_new_tokens: int = 1_000_000, do_sample: bool = True, temperature: float = 0.7, top_p: float = 0.95, top_k: float = 40, repetition_penalty: float = 1.1, model_name: str = '', is_ollama: bool = False):
+        if is_ollama:
+            if model_name == '':
+                raise ValueError(
+                    'model name cannot be empty if the is_ollama is True')
+            self.model_name = model_name
+            self.model = None
+            self.is_ollama = True
+
+        else:
+            super().__init__(model)
+            self.tokenizer = tokenizer
+            self.pipeline = pipeline(
+                "text-generation",
+                model=model,
+                tokenizer=tokenizer,
+                max_new_tokens=max_new_tokens,
+                do_sample=do_sample,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                repetition_penalty=repetition_penalty
+            )
 
     # TODO: Parse the output and return only the model reply
     # TODO: specifiy the prompt or use the default one
     def generate(self, message: str) -> str:
 
-        messages = [
-            {"role": "user", "content": message},
-        ]
-        prompt = self.tokenizer.apply_chat_template(messages, tokenize=False)
-        model_reply = self.pipeline(prompt)[0]['generated_text'][len(prompt):]
-        return model_reply
+        if self.is_ollama:
+            response = ollama.chat(model=self.model_name, messages=[
+                {
+                    'role': 'user',
+                    'content': message,
+                },
+            ])
+            return response['message']['content']
+
+        else:
+            messages = [
+                {"role": "user", "content": message},
+            ]
+            prompt = self.tokenizer.apply_chat_template(
+                messages, tokenize=False)
+            model_reply = self.pipeline(
+                prompt)[0]['generated_text'][len(prompt):]
+            return model_reply
 
 
 class Encoder(Model):

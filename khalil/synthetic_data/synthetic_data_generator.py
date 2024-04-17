@@ -1,8 +1,8 @@
 # TODO: DEAL WITH DICT TYPES
 import random
 
-from khalil.evaluation.context_relevancy import context_relevany
-from khalil.evaluation.faithfulness import faithfulness
+from khalil.evaluation.context_relevancy import context_relevany_one
+from khalil.evaluation.faithfulness import faithfulness_one
 from khalil.models.base import AutoRegressiveModel, Encoder
 from khalil.models.Prompt import Prompt
 from khalil.synthetic_data.prompt import TYPES
@@ -115,7 +115,7 @@ class Synthetic_data_generator:
                 'question': question,
                 'contexts': contexts
             }
-            verdict: int = context_relevany(self.judge, judge_data)
+            verdict: int = context_relevany_one(self.judge, judge_data)
 
             if verdict == 1:
                 synthetic_data_sample[question] = contexts
