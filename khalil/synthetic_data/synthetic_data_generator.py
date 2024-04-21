@@ -119,7 +119,7 @@ class Synthetic_data_generator:
                 base=TYPES[type],
                 data=generation_data
             )
-            print('GENERATION PROMPT', generation_prompt.get_text())
+            # print('GENERATION PROMPT', generation_prompt.get_text())
 
             print('*******\nTRYING')
             question: str = self.generator.generate(
