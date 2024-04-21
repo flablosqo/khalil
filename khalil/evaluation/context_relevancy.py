@@ -33,10 +33,8 @@ def context_relevany_one(judge, data: dict[str, str | list[str]]) -> int:
     prompt = Prompt(base=CONTEXT_RELEVANCY, data=data,
                     parse=parse_context_relevency_output
                     )
-    print('VERIFICATION PROMPT', prompt.get_text())
 
     judge_reply = judge.generate(prompt.get_text())
-    print('judge reply', judge_reply)
     print('*******')
     verdict: int = parse_context_relevency_output(judge_reply)
     print('verdict', verdict)

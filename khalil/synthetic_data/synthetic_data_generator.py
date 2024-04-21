@@ -122,6 +122,8 @@ class Synthetic_data_generator:
             # print('GENERATION PROMPT', generation_prompt.get_text())
 
             print('*******\nTRYING')
+            print('*******\ngeneration prompt', generation_prompt.get_text())
+
             question: str = self.generator.generate(
                 generation_prompt.get_text())
             print('\nCHOSEN QUESTION:', question, '\n')
