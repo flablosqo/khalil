@@ -68,7 +68,6 @@ class Synthetic_data_generator:
 
         i: int = 0
         while i < simple_question:
-            print('**************generating SIMPLE question number', i)
             synthetic_data_sample = self._generate(results_all, 'simple')
             synthetic_data = synthetic_data | {
                 i: synthetic_data_sample}
@@ -76,8 +75,7 @@ class Synthetic_data_generator:
 
         # TODO: Really don't like the 2 while loops
         i = 0
-        while i < simple_question:
-            print('**************generating MULTIPLE question number', i)
+        while i < multiple_context_question:
             synthetic_data_sample = self._generate(results_all, 'multiple')
             synthetic_data = synthetic_data | {
                 i: synthetic_data_sample}
@@ -99,10 +97,8 @@ class Synthetic_data_generator:
         # TODO: deal with this when dealing with new vectordb
         collection = self.vector_db.get_collection(
             name="langchain", embedding_function=custom) if self.vector_db else None
-        MAXIMUM_NUMBER_OF_TRIES: int = 3
         verdict: int = 0
-        number_of_tries: int = 0
-        while verdict == 0 and number_of_tries < MAXIMUM_NUMBER_OF_TRIES:
+        while verdict == 0:
             choice = random.choice(
                 results_all["documents"]) if results_all["documents"] else None
 
@@ -119,10 +115,6 @@ class Synthetic_data_generator:
                 base=TYPES[type],
                 data=generation_data
             )
-            # print('GENERATION PROMPT', generation_prompt.get_text())
-
-            print('*******\nTRYING')
-            print('*******\ngeneration prompt', generation_prompt.get_text())
 
             question: str = self.generator.generate(
                 generation_prompt.get_text())
@@ -132,12 +124,9 @@ class Synthetic_data_generator:
                 'question': question,
                 'contexts': contexts
             }
-            verdict: int = context_relevany_one(self.judge, judge_data)
+            verdict = context_relevany_one(self.judge, judge_data)
 
             if verdict == 1:
                 synthetic_data_sample[question] = contexts
                 return synthetic_data_sample
-            else:
-                number_of_tries += 1
-        print('failing\nexceeded the maximum number of tries without getting to a question')
-        return {}
+        return {}  # LSP IS ANNOYING
