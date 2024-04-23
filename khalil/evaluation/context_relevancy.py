@@ -4,7 +4,6 @@ import re
 
 from khalil.models.Prompt import Prompt
 
-
 ######################   START HERE ####################
 CONTEXT_RELEVANCY: str = """from this context can I infer that answer ? Please utilize only the provided context and not the general information. 
 If your response is no, {{verdict: 0}}; otherwise, {{verdict: 1}}.
@@ -36,6 +35,8 @@ def context_relevany_one(judge, data: dict[str, str | list[str]]) -> int:
                     )
 
     judge_reply = judge.generate(prompt.get_text())
+    print('*******')
+    print(judge_reply)
     print('*******')
     verdict: int = parse_context_relevency_output(judge_reply)
     print('verdict', verdict)
