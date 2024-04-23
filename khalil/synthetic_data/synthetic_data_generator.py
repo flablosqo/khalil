@@ -40,7 +40,7 @@ class Synthetic_data_generator:
     def generate_from_vector_db(self,
                                 vector_db,
                                 num_questions: int = 3,
-                                distribution: dict[str, float] = {'simple': 0.7, 'multiple': 0.3}) -> dict[int, dict[str, str | list[str]]]:
+                                distribution: dict[str, float] = {'simple': 0.7, 'multiple': 0.3}) -> list[dict[str, str | list[str]]]:
         """
         generates synthetic data from an already existing vectordb by follwing the following steps:
         1- gets a random context partially done
@@ -60,7 +60,9 @@ class Synthetic_data_generator:
 
         self.vector_db = vector_db
 
-        synthetic_data: dict[int, dict[str, str | list[str]]] = {}
+        # synthetic_data: dict[int, dict[str, str | list[str]]] = {}
+        synthetic_data: list[dict[str, str | list[str]]] = []
+
         # TODO: deal with Chromadb collections
         collection = self.vector_db.get_collection(
             name="langchain", embedding_function=custom)
@@ -69,16 +71,14 @@ class Synthetic_data_generator:
         i: int = 0
         while i < simple_question:
             synthetic_data_sample = self._generate(results_all, 'simple')
-            synthetic_data = synthetic_data | {
-                i: synthetic_data_sample}
+            synthetic_data.append(synthetic_data_sample)
             i += 1
 
         # TODO: Really don't like the 2 while loops
         i = 0
         while i < multiple_context_question:
             synthetic_data_sample = self._generate(results_all, 'multiple')
-            synthetic_data = synthetic_data | {
-                i: synthetic_data_sample}
+            synthetic_data.append(synthetic_data_sample)
             i += 1
         return synthetic_data
 
@@ -92,7 +92,7 @@ class Synthetic_data_generator:
         """
         generates one question and verifies it for the given list of contexts
         """
-        synthetic_data_sample: dict[str, str | list[str]] = {}
+        generated_sample: dict[str, str | list[str]] = {}
         question: str
         # TODO: deal with this when dealing with new vectordb
         collection = self.vector_db.get_collection(
@@ -120,13 +120,12 @@ class Synthetic_data_generator:
                 generation_prompt.get_text())
             print('\nCHOSEN QUESTION:', question, '\n')
             # verify the quality of the question
-            judge_data: dict[str, str | list[str]] = {
+            generated_sample = {
                 'question': question,
                 'contexts': contexts
             }
-            verdict = context_relevany_one(self.judge, judge_data)
+            verdict = context_relevany_one(self.judge, generated_sample)
 
             if verdict == 1:
-                synthetic_data_sample[question] = contexts
-                return synthetic_data_sample
+                return generated_sample
         return {}  # LSP IS ANNOYING
