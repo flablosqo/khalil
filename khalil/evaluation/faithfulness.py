@@ -18,7 +18,7 @@ def parse_failfulness_output(text: str) -> int:
     parses the judges output that comes out of the prompt context_relevency
     return: 0 or 1 (the veridict  and -1 if there is no verdict)
     """
-    pattern = r'{verdict:(\d)}'
+    pattern = r'verdict: (\d)'
     matches = re.findall(pattern, text)
 
     if matches:

@@ -16,7 +16,7 @@ def parse_context_relevency_output(text: str) -> int:
     parses the judges output that comes out of the prompt context_relevency
     return: 0 or 1 (the veridict  and -1 if there is no verdict)
     """
-    pattern = r'{verdict:(\d)}'
+    pattern = r'verdict: (\d)'
     match = re.search(pattern, text)
     if match:
         return int(match.group(1))
