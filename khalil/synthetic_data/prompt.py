@@ -3,10 +3,7 @@
 # AFTER REFACTORING
 
 
-SIMPLE_QUESTION_PROMPT: str = """
-from this context can I infer that answer ? Please utilize only the provided context and not the general information. 
-If your response is no, {{verdict: 0}}; otherwise, {{verdict: 1}}.
-the variable verdict should be the last thing in your answer.
+SIMPLE_QUESTION_PROMPT: str = """ Generate one and only one question that can be fully answered from the given context, assume the person answing this context does not have the context when answring. you answer should only contain the question
 """
 
 MULTIPLE_CONTEXT_QUESTION_PROMPT: str = """ Generate one and only one question that can be fully answered from the given context,

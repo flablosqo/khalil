@@ -4,10 +4,11 @@ import re
 
 from khalil.models.Prompt import Prompt
 
+
 ######################   START HERE ####################
-CONTEXT_RELEVANCY: str = """check if the following question can be answered fully from the provided context.
-you should not rely on any prior knowledge you have, rely only on the context.
-your answer should always start with the verdict following this exact format note the number of the {{ and }}: {{verdict:1}} if the context was useful and {{verdict:0}} if it was not, then give me the reasoning behind your verdict.
+CONTEXT_RELEVANCY: str = """from this context can I infer that answer ? Please utilize only the provided context and not the general information. 
+If your response is no, {{verdict: 0}}; otherwise, {{verdict: 1}}.
+the variable verdict should be the last thing in your answer.
 """
 
 
