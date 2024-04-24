@@ -35,6 +35,9 @@ def faithfulness_one(judge, data: dict[str, str | list[str]]) -> int:
                     parse=parse_failfulness_output
                     )
     print('STARTING FAITHFULNESS\n$$$$$$$$$$$$$$$$$$$$$$\n')
+    print('JUDGE prompt')
+    print(prompt)
+    print('*******')
 
     judge_reply = judge.generate(prompt.get_text())
     print('*******')
