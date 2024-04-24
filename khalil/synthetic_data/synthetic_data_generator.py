@@ -102,7 +102,7 @@ class Synthetic_data_generator:
             choice = random.choice(
                 results_all["documents"]) if results_all["documents"] else None
 
-            # NOTE: THE ASSUMPTION IS THAT THE CONTEXT PROVIDE SIMPLAR BUT SOMEWHAT DIFFERENT INFORMATION/// verify with multiple context quesetion
+            # NOTE: THE ASSUMPTION IS THAT THE CONTEXT PROVIDE SIMILAR BUT SOMEWHAT DIFFERENT INFORMATION/// verify with multiple context quesetion
             similiar_to_chosen_context = collection.query(
                 query_texts=[choice] if choice else None,
                 n_results=3

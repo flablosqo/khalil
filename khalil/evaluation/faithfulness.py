@@ -30,6 +30,7 @@ def parse_failfulness_output(text: str) -> int:
 
 
 def faithfulness_one(judge, data: dict[str, str | list[str]]) -> int:
+    # TODO: check data
     prompt = Prompt(base=FAITHFULNESS, data=data,
                     parse=parse_failfulness_output
                     )
@@ -37,6 +38,7 @@ def faithfulness_one(judge, data: dict[str, str | list[str]]) -> int:
 
     judge_reply = judge.generate(prompt.get_text())
     print('*******')
+    print(judge_reply)
     verdict: int = parse_failfulness_output(judge_reply)
     print('verdict', verdict)
     print('DONE WITH FAITHFULNESS\n$$$$$$$$$$$$$$$$$$$$$$\n')
