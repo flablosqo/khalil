@@ -36,7 +36,7 @@ def faithfulness_one(judge, data: dict[str, str | list[str]]) -> int:
                     )
     print('STARTING FAITHFULNESS\n$$$$$$$$$$$$$$$$$$$$$$\n')
     print('JUDGE prompt')
-    print(prompt)
+    print(prompt.get_text())
     print('*******')
 
     judge_reply = judge.generate(prompt.get_text())
