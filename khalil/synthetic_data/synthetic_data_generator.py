@@ -154,6 +154,7 @@ class Synthetic_data_generator:
         results_metadatas = similiar_to_chosen_context['metadatas'][0]
         # NOTE: the case where nothing should be done
         if max(results_distances) < REFERENCE_DISTANCE:
+            print('nothing  could be done')
             results_distances = results_distances[:TOP_K]
             results_documents = results_documents[:TOP_K]
             results_metadatas = results_metadatas[:TOP_K]
