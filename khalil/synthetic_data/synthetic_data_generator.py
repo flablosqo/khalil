@@ -145,14 +145,26 @@ class Synthetic_data_generator:
                 return generated_sample
         return {}  # LSP IS ANNOYING
     # TODO: REDO THE ENTIRE FUNTION IN A PROPER WAY GARBAAAAAAAAAAAAAAAAAAAAAAAAAGE
+    # TODO: also fix the types
 
     def get_less_than_distance(self, similiar_to_chosen_context) -> dict[str, list[list[str]]]:
 
         results_distances = similiar_to_chosen_context['distances'][0]
         results_documents = similiar_to_chosen_context['documents'][0]
         results_metadatas = similiar_to_chosen_context['metadatas'][0]
+        # NOTE: the case where nothing should be done
+        if max(results_distances) < REFERENCE_DISTANCE:
+            results_distances = results_distances[:TOP_K]
+            results_documents = results_documents[:TOP_K]
+            results_metadatas = results_metadatas[:TOP_K]
+            result = {
+                'distances': [results_distances],
+                'documents': [results_documents],
+                'metadatas': [results_metadatas]
+            }
+            return result
 
-        # NOTE: get the ids to delete
+            # NOTE: get the ids to delete
         to_delete: list[int] = []
         for index, distance in enumerate(results_distances):
             if distance < REFERENCE_DISTANCE:
