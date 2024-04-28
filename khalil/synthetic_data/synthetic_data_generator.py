@@ -117,6 +117,10 @@ class Synthetic_data_generator:
             ) if collection else None
             similiar_to_chosen_context = self.get_less_than_distance(
                 similiar_to_chosen_context)
+            print('************************************************************')
+            print(similiar_to_chosen_context)
+            print('************************************************************')
+
             contexts: list[str] = similiar_to_chosen_context['documents'][0] if similiar_to_chosen_context else []
             # prompts
             generation_data: dict[str, str | list[str]] = {
