@@ -3,7 +3,7 @@
 # AFTER REFACTORING
 
 
-SIMPLE_QUESTION_PROMPT: str = """ Generate one and only one question that can be fully answered from the given context, assume the person answing this context does not have the context when answring. you answer should only contain the question
+SIMPLE_QUESTION_PROMPT: str = """ Generate one and only one question that can be fully answered from the given context, assume the person answing this context does not have the context when answring. you answer should only contain the question.
 """
 
 MULTIPLE_CONTEXT_QUESTION_PROMPT: str = """ Generate one and only one question that can be fully answered from the given context,

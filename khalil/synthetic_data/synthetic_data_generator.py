@@ -10,6 +10,9 @@ from khalil.models.base import AutoRegressiveModel, Encoder
 from khalil.models.Prompt import Prompt
 from khalil.synthetic_data.prompt import TYPES
 
+REFERENCE_DISTANCE = 0.4
+NUMBERS_TO_RETREIVE = 20
+TOP_K = 3
 # NOTE: chroma part
 
 
@@ -33,6 +36,8 @@ class Synthetic_data_generator:
         self.judge = judge
         self.encoder = encoder
         self.vector_db = None
+        # NOTE: the user can provide some examples
+        self.example_data = []
 
     # TODO: Fix the type of the vectordb and the dict
     # TODO: refactor the code below
@@ -40,6 +45,8 @@ class Synthetic_data_generator:
     def generate_from_vector_db(self,
                                 vector_db,
                                 num_questions: int = 3,
+                                example_data: list[dict[str,
+                                                        str | list[str]]] = [],
                                 distribution: dict[str, float] = {'simple': 0.7, 'multiple': 0.3}) -> list[dict[str, str | list[str]]]:
         """
         generates synthetic data from an already existing vectordb by follwing the following steps:
@@ -59,6 +66,7 @@ class Synthetic_data_generator:
         print('multiple context questions', multiple_context_question)
 
         self.vector_db = vector_db
+        self.example_data = example_data
 
         # synthetic_data: dict[int, dict[str, str | list[str]]] = {}
         synthetic_data: list[dict[str, str | list[str]]] = []
@@ -105,15 +113,18 @@ class Synthetic_data_generator:
             # NOTE: THE ASSUMPTION IS THAT THE CONTEXT PROVIDE SIMILAR BUT SOMEWHAT DIFFERENT INFORMATION/// verify with multiple context quesetion
             similiar_to_chosen_context = collection.query(
                 query_texts=[choice] if choice else None,
-                n_results=3
+                n_results=NUMBERS_TO_RETREIVE
             ) if collection else None
+            similiar_to_chosen_context = self.get_less_than_distance(
+                similiar_to_chosen_context)
             contexts: list[str] = similiar_to_chosen_context['documents'][0] if similiar_to_chosen_context else []
             # prompts
             generation_data: dict[str, str | list[str]] = {
                 'contexts': contexts}
             generation_prompt: Prompt = Prompt(
                 base=TYPES[type],
-                data=generation_data
+                data=generation_data,
+                example_data=self.example_data
             )
 
             question: str = self.generator.generate(
@@ -129,3 +140,31 @@ class Synthetic_data_generator:
             if verdict == 1:
                 return generated_sample
         return {}  # LSP IS ANNOYING
+    # TODO: REDO THE ENTIRE FUNTION IN A PROPER WAY GARBAAAAAAAAAAAAAAAAAAAAAAAAAGE
+
+    def get_less_than_distance(self, similiar_to_chosen_context) -> dict[str, list[list[str]]]:
+
+        results_distances = similiar_to_chosen_context['distances'][0]
+        results_documents = similiar_to_chosen_context['documents'][0]
+        results_metadatas = similiar_to_chosen_context['metadatas'][0]
+
+        # NOTE: get the ids to delete
+        to_delete: list[int] = []
+        for index, distance in enumerate(results_distances):
+            if distance < REFERENCE_DISTANCE:
+                to_delete.append(index)
+
+        results_distances = [element for index, element in enumerate(
+            results_distances) if index in to_delete][:TOP_K]
+        results_documents = [element for index, element in enumerate(
+            results_documents) if index in to_delete][:TOP_K]
+        results_metadatas = [element for index, element in enumerate(
+            results_metadatas) if index in to_delete][:TOP_K]
+
+        # NOTE: match chromadb's output
+        result = {
+            'distances': [results_distances],
+            'documents': [results_documents],
+            'metadatas': [results_metadatas]
+        }
+        return result

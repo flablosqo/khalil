@@ -8,7 +8,7 @@ class Prompt:
     # TODO: update to work with multiple examples (few shot)
     # TODO: docs
 
-    def __init__(self, base: str, data: dict[str, str | list[str]] = {}, parse: Callable = lambda x: x) -> None:
+    def __init__(self, base: str, data: dict[str, str | list[str]] = {}, parse: Callable = lambda x: x, example_data: list[dict[str, str | list[str]]] = []) -> None:
         """
         prompts always follow this format:
 
@@ -24,10 +24,27 @@ class Prompt:
 
         self.base = base
         self.data = data
+        self.example_data = example_data
         self.parse = parse
 
         # beginning of creating the prompt
         self.prompt = base
+        # NOTE: add the examples if the exist
+        if self.example_data:
+            self.prompt += "here's some examples to give you an idea on what your answer should be, do not follow by heart."
+            for example in self.example_data:
+                if 'contexts' in example:
+                    bs = '\n'
+                    self.prompt += f'\ncontext: {bs.join(context for context in example["contexts"])}'
+
+                if 'question' in example:
+                    self.prompt += f'\nquestion: {example["question"]}'
+
+                if 'answer' in example:
+                    self.prompt += f'\nanswer: {example["answer"]}'
+
+        self.prompt += "here's the data you should use to answer"
+        # NOTE: add the data needed if it exists
         if 'question' in data:
             self.prompt += f'\nquestion: {data["question"]}'
         if 'contexts' in data:
