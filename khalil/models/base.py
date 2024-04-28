@@ -6,6 +6,8 @@ from typing import Any
 import ollama  # NOTE: conditional imports?
 from transformers import pipeline
 
+from khalil.models.Prompt import Prompt
+
 
 class Model(ABC):
     def __init__(self, model: Any, model_name: str = ''):
@@ -14,7 +16,7 @@ class Model(ABC):
         self.is_ollama = False
 
     # TODO: fix the inputs and the outputs
-    def generate(self, message: str) -> str:
+    def generate(self, prompt: Prompt | str) -> str:
         return ''
 
     # TODO: fix the inputs and the outputs
@@ -50,26 +52,36 @@ class AutoRegressiveModel(Model):
 
     # TODO: Parse the output and return only the model reply
     # TODO: specifiy the prompt or use the default one
-    def generate(self, message: str) -> str:
+    def generate(self, prompt: Prompt | str) -> str:
 
+        # check if the user passed in a string, if yes convert it into a prompt
+        if isinstance(prompt, str):
+            prompt = Prompt(prompt)
+
+            reply: str
         if self.is_ollama:
             response = ollama.chat(model=self.model_name, messages=[
                 {
                     'role': 'user',
-                    'content': message,
+                    'content': prompt.get_text(),
                 },
             ])
-            return response['message']['content']
+            reply = response['message']['content']
 
         else:
             messages = [
-                {"role": "user", "content": message},
+                {"role": "user", "content": prompt},
             ]
             prompt = self.tokenizer.apply_chat_template(
                 messages, tokenize=False)
             model_reply = self.pipeline(
-                prompt)[0]['generated_text'][len(prompt):]
-            return model_reply
+                # TODO: how to get rid of this error
+                prompt)[0]['generated_text'][len(prompt.get_text()):]
+
+            reply = model_reply
+
+        # TODO: how to get rid of this error too since the prompt should always be str
+        return prompt.parse_output(reply)
 
 
 class Encoder(Model):

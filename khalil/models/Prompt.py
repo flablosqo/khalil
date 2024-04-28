@@ -8,7 +8,7 @@ class Prompt:
     # TODO: update to work with multiple examples (few shot)
     # TODO: docs
 
-    def __init__(self, base: str, data: dict[str, str | list[str]], parse: Callable = lambda x: x) -> None:
+    def __init__(self, base: str, data: dict[str, str | list[str]] = {}, parse: Callable = lambda x: x) -> None:
         """
         prompts always follow this format:
 

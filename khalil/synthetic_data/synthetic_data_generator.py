@@ -117,7 +117,7 @@ class Synthetic_data_generator:
             )
 
             question: str = self.generator.generate(
-                generation_prompt.get_text())
+                generation_prompt)
             print('\nCHOSEN QUESTION:', question, '\n')
             # verify the quality of the question
             generated_sample = {
