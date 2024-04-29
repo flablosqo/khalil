@@ -81,6 +81,7 @@ class AutoRegressiveModel(Model):
             reply = model_reply
 
         # TODO: how to get rid of this error too since the prompt should always be str
+        print(reply)
         return prompt.parse_output(reply)
 
 
