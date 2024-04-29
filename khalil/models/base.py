@@ -58,7 +58,7 @@ class AutoRegressiveModel(Model):
         if isinstance(prompt, str):
             prompt = Prompt(prompt)
 
-            reply: str
+        reply: str
         if self.is_ollama:
             response = ollama.chat(model=self.model_name, messages=[
                 {
@@ -70,13 +70,13 @@ class AutoRegressiveModel(Model):
 
         else:
             messages = [
-                {"role": "user", "content": prompt},
+                {"role": "user", "content": prompt.get_text()},
             ]
             prompt = self.tokenizer.apply_chat_template(
                 messages, tokenize=False)
             model_reply = self.pipeline(
                 # TODO: how to get rid of this error
-                prompt)[0]['generated_text'][len(prompt.get_text()):]
+                prompt)[0]['generated_text'][len(prompt):]
 
             reply = model_reply
 

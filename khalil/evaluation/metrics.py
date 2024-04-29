@@ -49,10 +49,7 @@ class Metric(ABC):
         calculates the metric for one example 
         """
         prompt = self.create_prompt(data)
-        print(prompt.get_text())
         verdict: int = self.judge.generate(prompt)
-        print('**************')
-        print('judge verdict: ', verdict)
         # TODO: make this a oneliner??
         return verdict
 
@@ -93,7 +90,6 @@ class Context_Relevancy(Metric):
             return 0
 
     def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
-        # NOTE: make sure to affect the prompt to the object
 
         prompt = Prompt(base=self.base_prompt,
                         data=data, parse=self.parse_output)
@@ -126,7 +122,6 @@ class Faithfulness(Metric):
             return 0
 
     def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
-        # NOTE: make sure to affect the prompt to the object
 
         prompt = Prompt(base=self.base_prompt,
                         data=data, parse=self.parse_output)
