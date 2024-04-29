@@ -89,7 +89,8 @@ class Context_Relevancy(Metric):
         if match:
             return int(match.group(1))
         else:
-            return -1
+            # NOTE: this shouldn't be a 0 maybe?
+            return 0
 
     def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
         # NOTE: make sure to affect the prompt to the object
@@ -121,7 +122,8 @@ class Faithfulness(Metric):
         if matches:
             return int(matches[-1])
         else:
-            return -1
+            # NOTE: this shouldn't be a 0 maybe?
+            return 0
 
     def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
         # NOTE: make sure to affect the prompt to the object
