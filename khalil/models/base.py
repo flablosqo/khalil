@@ -80,7 +80,7 @@ class AutoRegressiveModel(Model):
 
             reply = model_reply
 
-        # TODO: how to get rid of this error too since the prompt should always be str
+        # TODO: how to get rid of this error too
         return prompt.parse_output(reply)
 
 
@@ -89,5 +89,4 @@ class Encoder(Model):
         super().__init__(model)
 
     def encode(self, sentence: str):
-        result = self.model.encode(sentence, normalize_embeddings=True)
-        return result
+        return self.model.encode(sentence, normalize_embeddings=True)
