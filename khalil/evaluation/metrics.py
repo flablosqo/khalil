@@ -49,6 +49,7 @@ class Metric(ABC):
         calculates the metric for one example 
         """
         prompt = self.create_prompt(data)
+        print(prompt.get_text())
         verdict: int = self.judge.generate(prompt)
         print('**************')
         print('judge verdict: ', verdict)
