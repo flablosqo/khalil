@@ -72,11 +72,11 @@ class AutoRegressiveModel(Model):
             messages = [
                 {"role": "user", "content": prompt.get_text()},
             ]
-            prompt = self.tokenizer.apply_chat_template(
+            generation_prompt = self.tokenizer.apply_chat_template(
                 messages, tokenize=False)
             model_reply = self.pipeline(
                 # TODO: how to get rid of this error
-                prompt)[0]['generated_text'][len(prompt):]
+                generation_prompt)[0]['generated_text'][len(generation_prompt):]
 
             reply = model_reply
 
