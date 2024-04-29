@@ -25,11 +25,11 @@ def summary(judge, data: list[dict[str, str | list[str]]]) -> dict[str, float]:
 
 
 class Metric(ABC):
-    def __init__(self, judge, data: dict[str, str | list[str]], is_encoder=False) -> None:
+
+    # TODO: FIX the types
+    def __init__(self, judge) -> None:
         self.judge = judge
-        self.data = data
-        self.is_encoder = is_encoder
-        self.prompt = None
+        self.base_prompt = None
 
     @abstractmethod
     def parse_output(self, text: str) -> int:
@@ -40,7 +40,7 @@ class Metric(ABC):
         pass
 
     @abstractmethod
-    def create_prompt(self) -> None:
+    def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
         # NOTE: make sure to affect the prompt to the object
         pass
 
@@ -48,7 +48,8 @@ class Metric(ABC):
         """
         calculates the metric for one example 
         """
-        verdict: int = self.judge.generate(self.prompt)
+        prompt = self.create_prompt(data)
+        verdict: int = self.judge.generate(prompt)
         print('**************')
         print('judge verdict: ', verdict)
         # TODO: make this a oneliner??
@@ -73,8 +74,9 @@ the variable verdict should be the last thing in your answer.
 
 
 class Context_Relevancy(Metric):
-    def __init__(self, judge, data: dict[str, str | list[str]], is_encoder=False) -> None:
-        super().__init__(judge, data, is_encoder)
+    def __init__(self, judge) -> None:
+        super().__init__(judge)
+        self.base_prompt = CONTEXT_RELEVANCY
 
     def parse_output(self, text: str) -> int:
         """
@@ -88,11 +90,12 @@ class Context_Relevancy(Metric):
         else:
             return -1
 
-    def create_prompt(self) -> None:
+    def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
         # NOTE: make sure to affect the prompt to the object
 
-        self.prompt = Prompt(base=CONTEXT_RELEVANCY,
-                             data=self.data, parse=self.parse_output)
+        prompt = Prompt(base=self.base_prompt,
+                        data=data, parse=self.parse_output)
+        return prompt
 
 
 FAITHFULNESS: str = """from this context can I infer that answer ? Please utilize only the provided context and not the general information. 
@@ -101,8 +104,9 @@ the variable verdict should be the last thing in your answer."""
 
 
 class Faithfulness(Metric):
-    def __init__(self, judge, data: dict[str, str | list[str]], is_encoder=False) -> None:
-        super().__init__(judge, data, is_encoder)
+    def __init__(self, judge) -> None:
+        super().__init__(judge)
+        self.base_prompt = FAITHFULNESS
 
     def parse_output(self, text: str) -> int:
         """
@@ -118,8 +122,9 @@ class Faithfulness(Metric):
         else:
             return -1
 
-    def create_prompt(self) -> None:
+    def create_prompt(self, data: dict[str, str | list[str]]) -> Prompt:
         # NOTE: make sure to affect the prompt to the object
 
-        self.prompt = Prompt(base=FAITHFULNESS,
-                             data=self.data, parse=self.parse_output)
+        prompt = Prompt(base=self.base_prompt,
+                        data=data, parse=self.parse_output)
+        return prompt
