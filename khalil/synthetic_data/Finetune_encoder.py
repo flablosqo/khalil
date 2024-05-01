@@ -14,9 +14,7 @@ class BertDataset(Dataset):
     def __init__(self, tokenizer, max_length, data_path):
         super(BertDataset, self).__init__()
         self.root_dir = '.'
-        self.train_csv = pd.read_csv(
-            'https://github.com/clairett/pytorch-sentiment-classification/raw/master/data/SST2/train.tsv', delimiter='\t', header=None)
-
+        self.train_csv = pd.read_csv(data_path)
         self.tokenizer = tokenizer
         self.target = self.train_csv.iloc[:, 1]
         self.max_length = max_length
