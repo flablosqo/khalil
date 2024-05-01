@@ -57,10 +57,57 @@ class Finetune_dataset():
             cos_sim = self.calculate_cosine_similarity(
                 encoded_original, encoded_chosen)
             if cos_sim < ACCEPTANCE_THRESHOLD:
-                sample['wrong '+column] = choice[column]
+                sample['wrong_'+column] = choice[column]
                 found = True
         return sample
 
+    def _add_wrongContext_feature(self) -> list[dict[str, str]]:
+        dataset = self.dataset
+        for index, element in enumerate(dataset):
+            dataset[index] = self.get_negative_sample(element, 'context')
+        return dataset
+
+    # NOTE: doing it like this is possibly dumb? maybe integrate the entire thing in the above function
+    # NOTE: affect the new dataset and make sure not to do the same thing multiple times??
+    # TODO: refactor this
+    def get_contextRelevency_dataset(self):
+        data = self._add_wrongContext_feature()
+        final_data: list[dict[str, str]] = []
+        for element in data:
+            new: dict[str, str] = {}
+            new['text'] = element['question'] + element['context']
+            new['target'] = '1'
+            final_data.append(new)
+
+            new['text'] = element['question'] + element['wrong_context']
+            new['target'] = '0'
+            final_data.append(new)
+
+        return final_data
+
+    def _add_wrongAnswer_feature(self) -> list[dict[str, str]]:
+        dataset = self.dataset
+        for index, element in enumerate(dataset):
+            dataset[index] = self.get_negative_sample(element, 'answer')
+        return dataset
+
+    # NOTE: same as above
+    def get_answerRelevency_dataset(self):
+        data = self._add_wrongAnswer_feature()
+        final_data: list[dict[str, str]] = []
+        for element in data:
+            new: dict[str, str] = {}
+            new['text'] = element['question'] + element['answer']
+            new['target'] = '1'
+            final_data.append(new)
+
+            new['text'] = element['question'] + element['wrong_answer']
+            new['target'] = '0'
+            final_data.append(new)
+
+        return final_data
+
+    # NOTE: Maybe do this function using the above two functions?
     def get_full_dataset(self) -> list[dict[str, str]]:
         dataset = self.dataset
         for index, element in enumerate(dataset):

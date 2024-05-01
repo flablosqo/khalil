@@ -46,22 +46,14 @@ class BertDataset(Dataset):
         }
 
 
-tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
-
-dataset = BertDataset(tokenizer, max_length=100,
-                      data_path='https://raw.githubusercontent.com/clairett/pytorch-sentiment-classification/master/data/SST2/train.tsv')
-
-dataloader = DataLoader(dataset=dataset, batch_size=32)
-
-
 # NOTE: BERT CLASS
 
 class BERT(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes, model_name="bert-base-uncased"):
         super(BERT, self).__init__()
         self.bert_model = transformers.BertModel.from_pretrained(
-            "bert-base-uncased")
-        self.out = nn.Linear(768, 1)
+            model_name)
+        self.out = nn.Linear(768, num_classes)
 
     def forward(self, ids, mask, token_type_ids):
         _, o2 = self.bert_model(ids, attention_mask=mask,
@@ -70,13 +62,6 @@ class BERT(nn.Module):
         out = self.out(o2)
 
         return out
-
-
-model = BERT()
-
-loss_fn = nn.BCEWithLogitsLoss()
-
-optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 
 # NOTE: FINETUNE FUNCTION HERE
@@ -91,7 +76,6 @@ def finetune(epochs, dataloader, model, loss_fn, optimizer):
             mask = dl['mask']
             label = dl['target']
             label = label.unsqueeze(1)
-
             optimizer.zero_grad()
 
             output = model(
@@ -117,4 +101,34 @@ def finetune(epochs, dataloader, model, loss_fn, optimizer):
     return model
 
 
+# testing orginially after custom dataset
+tokenizer = transformers.BertTokenizer.from_pretrained("bert-base-uncased")
+dataset = BertDataset(tokenizer, max_length=100,
+                      data_path='https://raw.githubusercontent.com/clairett/pytorch-sentiment-classification/master/data/SST2/train.tsv')
+dataloader = DataLoader(dataset=dataset, batch_size=32)
+
+
+# testing orginially bert
+
+
+model = BERT(num_classes=1)
+
+loss_fn = nn.BCEWithLogitsLoss()
+
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
 # model=finetune(5, dataloader, model, loss_fn, optimizer)
+
+
+finetune_parameters = {
+    'lr': 0.001,
+    'optimizer': optim.Adam,
+    'loss_func': nn.BCEWithLogitsLoss(),
+}
+
+
+class Finetune_encoder:
+    def __init__(self, model, tokenizer, dataset, data_path, num_classes, finetune_parameters,) -> None:
+        pass
+
+    def finetune(self):
+        pass
