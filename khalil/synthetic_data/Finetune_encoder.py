@@ -126,7 +126,7 @@ class Finetune_encoder:
     def __init__(self, model_name: str, data_path, num_classes, tokenizer=None, finetune_parameters=finetune_parameters) -> None:
         self.model_name = 'bert-base-uncased'
         self.tokenizer = tokenizer if tokenizer else AutoTokenizer.from_pretrained(
-            model_name)
+            self.model_name)
         self.dataset = BertDataset(
             self.tokenizer, max_length=100, data_path=data_path)
         self.dataloader = DataLoader(dataset=self.dataset, batch_size=32)
