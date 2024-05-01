@@ -75,11 +75,13 @@ class Finetune_dataset():
         final_data: list[dict[str, str]] = []
         for element in data:
             new: dict[str, str] = {}
-            new['text'] = element['question'] + element['context']
+            new['text'] = '[question]' + element['question'] + \
+                '[context]' + element['context']
             new['target'] = '1'
             final_data.append(new)
 
-            new['text'] = element['question'] + element['wrong_context']
+            new['text'] = '[question]' + element['question'] + \
+                '[context]' + element['wrong_context']
             new['target'] = '0'
             final_data.append(new)
 
@@ -97,11 +99,13 @@ class Finetune_dataset():
         final_data: list[dict[str, str]] = []
         for element in data:
             new: dict[str, str] = {}
-            new['text'] = element['question'] + element['answer']
+            new['text'] = '[question]' + element['question'] + \
+                '[answer]' + element['answer']
             new['target'] = '1'
             final_data.append(new)
 
-            new['text'] = element['question'] + element['wrong_answer']
+            new['text'] = '[question]' + element['question'] + \
+                '[answer]' + element['wrong_answer']
             new['target'] = '0'
             final_data.append(new)
 
