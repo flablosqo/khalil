@@ -23,7 +23,6 @@ class Finetune_dataset():
         self.encoder = encoder
 
         if isinstance(dataset, pd.DataFrame):
-            print('len in constructor', dataset.shape)
             dataset = dataset.to_dict('records')
         MANDATORY_COLUMNS = ['question', 'context', 'answer']
         if not all(element in dataset[0].keys() for element in MANDATORY_COLUMNS):
