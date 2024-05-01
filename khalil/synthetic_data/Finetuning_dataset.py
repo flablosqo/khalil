@@ -24,7 +24,7 @@ class Finetune_dataset():
 
         if isinstance(dataset, pd.DataFrame):
             dataset = dataset.to_dict('records')
-            print('len in constructor', dataset)
+            print('len in constructor', len(dataset))
         MANDATORY_COLUMNS = ['question', 'context', 'answer']
         if not all(element in dataset[0].keys() for element in MANDATORY_COLUMNS):
             raise ValueError(
@@ -73,7 +73,6 @@ class Finetune_dataset():
     # TODO: refactor this
     def get_contextRelevency_dataset(self):
         data = self._add_wrongContext_feature()
-        print('lenData', len(data))
         final_data: list[dict[str, str]] = []
         for element in data:
 
