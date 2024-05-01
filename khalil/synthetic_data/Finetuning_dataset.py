@@ -24,13 +24,13 @@ class Finetune_dataset():
 
         if isinstance(dataset, pd.DataFrame):
             dataset = dataset.to_dict('records')
+            print('len in constructor', dataset)
         MANDATORY_COLUMNS = ['question', 'context', 'answer']
         if not all(element in dataset[0].keys() for element in MANDATORY_COLUMNS):
             raise ValueError(
                 'the format of the dataset you entered is invalid, make sure kuestion, context and answer are present as columns')
 
         self.dataset: list[dict[str, str]] = dataset
-        print('len in constructor', dataset)
         self.full_dataset: list[dict[str, str]] = []
 
     # TODO: update the return type with the correct one
