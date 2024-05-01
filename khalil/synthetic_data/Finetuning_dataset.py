@@ -74,17 +74,18 @@ class Finetune_dataset():
         data = self._add_wrongContext_feature()
         final_data: list[dict[str, str]] = []
         for element in data:
-            new: dict[str, str] = {}
 
-            new['text'] = '[question]' + element['question'] + \
-                '[context]' + element['wrong_context']
-            new['target'] = '0'
-            final_data.append(new)
-
-            new['text'] = '[question]' + element['question'] + \
+            new_true: dict[str, str] = {}
+            new_true['text'] = '[question]' + element['question'] + \
                 '[context]' + element['context']
-            new['target'] = '1'
-            final_data.append(new)
+            new_true['target'] = '1'
+            final_data.append(new_true)
+
+            new_false: dict[str, str] = {}
+            new_false['text'] = '[question]' + element['question'] + \
+                '[context]' + element['wrong_context']
+            new_false['target'] = '0'
+            final_data.append(new_false)
 
         return final_data
 
@@ -99,16 +100,17 @@ class Finetune_dataset():
         data = self._add_wrongAnswer_feature()
         final_data: list[dict[str, str]] = []
         for element in data:
-            new: dict[str, str] = {}
-            new['text'] = '[question]' + element['question'] + \
+            new_true: dict[str, str] = {}
+            new_true['text'] = '[question]' + element['question'] + \
                 '[answer]' + element['answer']
-            new['target'] = '1'
-            final_data.append(new)
+            new_true['target'] = '1'
+            final_data.append(new_true)
 
-            new['text'] = '[question]' + element['question'] + \
+            new_false: dict[str, str] = {}
+            new_false['text'] = '[question]' + element['question'] + \
                 '[answer]' + element['wrong_answer']
-            new['target'] = '0'
-            final_data.append(new)
+            new_false['target'] = '0'
+            final_data.append(new_false)
 
         return final_data
 
