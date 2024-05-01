@@ -144,7 +144,9 @@ class Finetune_encoder:
                 mask = dl['mask']
                 label = dl['target']
                 label = label.unsqueeze(1)
-                optimizer = self.finetune_parameters['optimizer']
+
+                optimizer = self.finetune_parameters['optimizer'](
+                    self.model.parameters(), lr=finetune_parameters['lr'])
                 optimizer.zero_grad()
 
                 output = self.model(
