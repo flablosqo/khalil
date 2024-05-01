@@ -30,6 +30,7 @@ class Finetune_dataset():
                 'the format of the dataset you entered is invalid, make sure kuestion, context and answer are present as columns')
 
         self.dataset: list[dict[str, str]] = dataset
+        print('len in constructor', dataset)
         self.full_dataset: list[dict[str, str]] = []
 
     # TODO: update the return type with the correct one
