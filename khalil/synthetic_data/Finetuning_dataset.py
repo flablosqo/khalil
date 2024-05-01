@@ -72,6 +72,7 @@ class Finetune_dataset():
     # TODO: refactor this
     def get_contextRelevency_dataset(self):
         data = self._add_wrongContext_feature()
+        print('lenData', len(data))
         final_data: list[dict[str, str]] = []
         for element in data:
 
