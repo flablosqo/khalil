@@ -57,9 +57,10 @@ class Chroma(VectorDB):
                 return embeddings
 
         custom = MyEmbeddingFunction()
+
+        # if the user did not pass in any collection take in by default the first one
         if not collection_name:
-            # if the user did not pass in any collection take in by default the first one
-            return self.vectordb.list_collections()[0]
+            return self.vectordb.get_collection(name=self.vectordb.list_collections()[0].name, embedding_function=custom)
         else:
             return self.vectordb.get_collection(name=collection_name, embedding_function=custom)
 
@@ -85,6 +86,7 @@ class Chroma(VectorDB):
         similiar_to_chosen_context = self.get_similiar_results(random_choice)
         similiar_to_chosen_context = self.get_less_than_distance(
             similiar_to_chosen_context)
+        return similiar_to_chosen_context
 
     # TODO: REDO THE ENTIRE FUNTION IN A PROPER WAY GARBAAAAAAAAAAAAAAAAAAAAAAAAAGE
     # TODO: also fix the types
