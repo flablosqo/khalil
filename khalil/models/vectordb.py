@@ -1,7 +1,9 @@
 import random
 from abc import ABC, abstractmethod
+from typing import Any
 
 # NOTE: maybe change the place for these importance
+import chromadb
 from chromadb import Documents, EmbeddingFunction, Embeddings
 from chromadb.utils import embedding_functions
 
@@ -19,12 +21,12 @@ class VectorDB(ABC):
     # TODO: types
 
     @abstractmethod
-    def get_all(self):
+    def get_all(self) -> dict[str, list[str]]:
         pass
 
     # TODO: types
     @abstractmethod
-    def get_random(self):
+    def get_random(self) -> str:
         pass
 
     # TODO: types
@@ -39,12 +41,13 @@ class VectorDB(ABC):
 
 
 class Chroma(VectorDB):
-    def __init__(self, vectordb, embedding_model) -> None:
+    def __init__(self, vectordb: chromadb.api.client.Client, embedding_model, collection_name: str = '') -> None:
         super().__init__(vectordb, embedding_model)
         # TODO: fix
-        self.collection = self.load_collection(collection_name='langchain')
+        self.collection: chromadb.api.models.Collection.Collection = self.load_collection(
+            collection_name=collection_name)
 
-    def load_collection(self, collection_name: str) -> None:
+    def load_collection(self, collection_name: str) -> chromadb.api.models.Collection.Collection:
         class MyEmbeddingFunction(EmbeddingFunction[Documents]):
             def __call__(self, input: Documents) -> Embeddings:
                 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
@@ -54,14 +57,19 @@ class Chroma(VectorDB):
                 return embeddings
 
         custom = MyEmbeddingFunction()
-        return self.vectordb.get_collection(name=collection_name, embedding_function=custom)
+        if not collection_name:
+            # if the user did not pass in any collection take in by default the first one
+            return self.vectordb.list_collections()[0]
+        else:
+            return self.vectordb.get_collection(name=collection_name, embedding_function=custom)
 
-    def get_all(self):
+    # should return dict[str, list[str]]: maybe the return should always be the same across all vectordbs?
+    def get_all(self) -> dict[str, list[str]]:
         results_all = self.collection.get()
         return results_all
 
-    def get_random(self):
-        results_all = self.get_all()
+    def get_random(self) -> str:
+        results_all: dict[str, list[str]] = self.get_all()
         # TODO: do the below part differently to return everything not just the document
         return random.choice(results_all["documents"])
 
