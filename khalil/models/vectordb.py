@@ -36,7 +36,7 @@ class VectorDB(ABC):
 
     # TODO: types
     @abstractmethod
-    def get_similar_to_random(self):
+    def get_similar_to_random(self, random_choice: str):
         pass
 
 
@@ -81,8 +81,7 @@ class Chroma(VectorDB):
         )
 
     # TODO: types
-    def get_similar_to_random(self):
-        random_choice = self.get_random()
+    def get_similar_to_random(self, random_choice: str):
         similiar_to_chosen_context = self.get_similiar_results(random_choice)
         similiar_to_chosen_context = self.get_less_than_distance(
             similiar_to_chosen_context)
