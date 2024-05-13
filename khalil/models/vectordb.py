@@ -41,7 +41,7 @@ class VectorDB(ABC):
 
 
 class Chroma(VectorDB):
-    def __init__(self, vectordb: chromadb.api.client.Client, embedding_model, collection_name: str = '') -> None:
+    def __init__(self, vectordb: chromadb.api.client.Client, embedding_model="BAAI/bge-base-en-v1.5", collection_name: str = '') -> None:
         super().__init__(vectordb, embedding_model)
         # TODO: fix
         self.collection: chromadb.api.models.Collection.Collection = self.load_collection(
@@ -52,7 +52,7 @@ class Chroma(VectorDB):
             def __call__(self, input: Documents) -> Embeddings:
                 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
                     # TODO: fix the embeddor model
-                    model_name="BAAI/bge-base-en-v1.5")
+                    model_name=self.embedding_model)
                 embeddings = sentence_transformer_ef(input)
                 return embeddings
 
