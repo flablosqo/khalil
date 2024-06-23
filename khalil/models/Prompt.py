@@ -1,5 +1,3 @@
-
-
 from typing import Callable
 
 
@@ -27,8 +25,12 @@ class Prompt:
         self.example_data = example_data
         self.parse = parse
 
+        # create the prompt
+        self._create_prompt()
+
+    def _create_prompt(self) -> None:
         # beginning of creating the prompt
-        self.prompt = base
+        self.prompt = self.base
         # NOTE: add the examples if the exist
         if self.example_data:
             self.prompt += "here's some examples to give you an idea on what your answer should be, do not follow by heart."
@@ -45,13 +47,14 @@ class Prompt:
 
         self.prompt += "here's the data you should use to answer"
         # NOTE: add the data needed if it exists
-        if 'question' in data:
-            self.prompt += f'\nquestion: {data["question"]}'
-        if 'contexts' in data:
+        if 'question' in self.data:
+            self.prompt += f'\nquestion: {self.data["question"]}'
+        if 'contexts' in self.data:
             bs = '\n'
-            self.prompt += f'\ncontext: {bs.join(context for context in data["contexts"])}'
-        if 'answer' in data:
-            self.prompt += f'\nanswer: {data["answer"]}'
+            self.prompt += f'\ncontext: {bs.join(context for context in self.data["contexts"])}'
+        if 'answer' in self.data:
+            self.prompt += f'\nanswer: {self.data["answer"]}'
+
 
     def get_text(self) -> str:
         return self.prompt
